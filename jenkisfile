@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+    tools{
+        terraform 'Terraform'
+    }
+     
+    stages {
+        stage('Download file'){
+            steps{
+                git branch: 'main', credentialsId: 'FITRAGIT', url: 'https://github.com/fitraelbi/jenkins_terraform_ansible_exp.git'
+            }
+        }
+        stage('Terraform Init'){
+            steps{
+                sh 'terraform init'
+                sh 'terraform plan'
+            }
+        }
+        
+        stage('Terraform Provisioning'){
+            steps{
+               sh 'terraform apply --auto-approve'
+            }
+        }
+        
+              
+          stage('Ansible Init') {
+            steps {
+                script {
+                
+               def tfHome = tool name: 'Ansible'
+                env.PATH = "${tfHome}:${env.PATH}"
+                 sh 'ansible --version'
+                    
+            }
+            }
+        }
+        
+        stage('Ansible Settings') {
+             
+            steps {
+               sh 'chmod 600 coba2.pem'
+               sh 'ansible-playbook ./main.yml -i ./hosts --user ubuntu --key-file coba2.pem'
+            }
+        }
+        
+        
+        stage('Ansible Deploy') {
+             
+            steps {
+               
+               sh "ansible-playbook /var/lib/jenkins/main.yml -i ./hosts  "
+            }
+        }
+        
+}
+}
