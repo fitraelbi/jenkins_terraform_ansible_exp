@@ -1,0 +1,37 @@
+---
+    - name: Setup User
+      hosts: all
+      become: true
+      become_user: root
+      gather_facts: false
+
+      tasks:
+        - name: Check connection node
+          ping:
+
+        - name: Add a new user named devops
+          user:
+               name=jenkins
+               password=1234jenkins
+
+        - name: Add devops user to the sudoers
+          copy:
+               dest: "/etc/sudoers.d/devops"
+               content: "devops  ALL=(ALL)  NOPASSWD: ALL"
+
+        - name: Deploy SSH Key
+          authorized_key:
+               user=jenkins
+               key="{{ lookup('file', '/var/lib/jenkins/.ssh/id_rsa.pub') }}"
+               state=present
+                     
+        - name: Disable Password Authentication
+          lineinfile:
+               dest=/etc/ssh/sshd_config
+               regexp='^PasswordAuthentication'
+               line="PasswordAuthentication no"
+               state=present
+               backup=yes
+          notify:
+            - restart ssh
+                      
