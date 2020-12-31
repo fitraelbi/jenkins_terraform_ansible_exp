@@ -6,9 +6,6 @@
       gather_facts: false
 
       tasks:
-        - name: Check connection node
-          ping:
-
         - name: Add a new user named devops
           user:
                name=jenkins
