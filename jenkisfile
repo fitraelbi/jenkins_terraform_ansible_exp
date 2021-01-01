@@ -12,6 +12,7 @@ pipeline {
         }
         stage('Terraform Init'){
             steps{
+                sh 'terraform destroy --auto-approve'
                 sh 'terraform init'
                 sh 'terraform plan'
             }
@@ -22,7 +23,12 @@ pipeline {
                sh 'terraform apply --auto-approve'
             }
         }
-        
+        stage ("wait_prior_starting_ansible") {
+          steps{
+             echo 'Waiting 5 minutes for deployment to complete prior starting ansible configuration'
+            sleep 300 
+          }
+        }
               
           stage('Ansible Init') {
             steps {

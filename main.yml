@@ -6,7 +6,7 @@
       gather_facts: false
 
       tasks:
-        - name: Add a new user named devops
+        - name: Add a new user named jenkins
           user:
                name=jenkins
                password=1234jenkins
