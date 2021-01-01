@@ -52,7 +52,7 @@ resource "aws_security_group" "allow_web" {
 }
 
 resource "aws_instance" "web-server-instance" {
-  ami               = "ami-085925f297f89fce1"
+  ami               = "ami-0be2609ba883822ec"
   instance_type     = "t2.micro"
   availability_zone = "us-east-1a"
   key_name          = "coba2"
